@@ -1,0 +1,5 @@
+KDEF_and_AKDEF
+.gitignore
+__pycache__/
+*.svm
+*.log
