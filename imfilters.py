@@ -30,3 +30,34 @@ def sobel(img):
             ang[x, y] = m.atan2(dy[x][y] , dx[x][y]) * 180 / m.pi * (dx[x][y] > 0)
 
     return mag, ang
+
+def non_maximum_supression(img, angle):
+    nms = np.zeros(img.shape)
+
+    for i in range(1, img.shape[0] - 1):
+        for j in range(1, img.shape[1] - 1):
+            q = 255
+            r = 255
+
+            #angle 0
+            if (0 <= angle[i,j] < 22.5) or (157.5 <= angle[i,j] <= 180):
+                q = img[i, j+1]
+                r = img[i, j-1]
+            #angle 45
+            elif (22.5 <= angle[i,j] < 67.5):
+                q = img[i+1, j-1]
+                r = img[i-1, j+1]
+            #angle 90
+            elif (67.5 <= angle[i,j] < 112.5):
+                q = img[i+1, j]
+                r = img[i-1, j]
+            #angle 135
+            elif (112.5 <= angle[i,j] < 157.5):
+                q = img[i-1, j-1]
+                r = img[i+1, j+1]
+
+            if (img[i,j] >= q) and (img[i,j] >= r):
+                nms[i,j] = img[i,j]
+            else:
+                nms[i,j] = 0
+    return nms
