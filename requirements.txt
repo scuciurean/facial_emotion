@@ -3,5 +3,6 @@ scipy
 matplotlib
 opencv-python
 sklearn
+scikit-learn
 scikit-image
 wget
