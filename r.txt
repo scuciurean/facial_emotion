@@ -1,0 +1,85 @@
+confusion matrix face:
+[[4194    6]
+ [0    2647]]
+
+[64]
+
+Classification report for classifier SVC():
+              precision    recall  f1-score   support
+
+           0       0.39      0.50      0.44        14
+           1       0.47      0.64      0.55        14
+           2       0.50      0.50      0.50        14
+           3       0.86      0.43      0.57        14
+           4       0.47      0.64      0.55        14
+           5       0.60      0.21      0.32        14
+           6       0.56      0.64      0.60        14
+
+    accuracy                           0.51        98
+   macro avg       0.55      0.51      0.50        98
+weighted avg       0.55      0.51      0.50        98
+
+
+Confusion matrix:
+[[7 0 1 1 3 0 2]
+ [0 9 2 0 1 1 1]
+ [2 1 7 0 2 1 1]
+ [3 1 2 6 1 0 1]
+ [1 1 1 0 9 0 2]
+ [2 6 1 0 2 3 0]
+ [3 1 0 0 1 0 9]]
+
+[512] 10%test
+
+Classification report for classifier SVC():
+              precision    recall  f1-score   support
+
+           0       0.71      0.36      0.48        14
+           1       0.65      0.79      0.71        14
+           2       0.90      0.64      0.75        14
+           3       0.81      0.93      0.87        14
+           4       0.71      0.86      0.77        14
+           5       0.50      0.57      0.53        14
+           6       0.73      0.79      0.76        14
+
+    accuracy                           0.70        98
+   macro avg       0.72      0.70      0.70        98
+weighted avg       0.72      0.70      0.70        98
+
+
+Confusion matrix:
+[[ 5  0  1  2  2  1  3]
+ [ 0 11  0  0  1  2  0]
+ [ 0  1  9  1  0  3  0]
+ [ 0  0  0 13  0  0  1]
+ [ 0  0  0  0 12  2  0]
+ [ 0  5  0  0  1  8  0]
+ [ 2  0  0  0  1  0 11]]
+
+[512] 30%test
+
+
+Classification report for classifier SVC():
+              precision    recall  f1-score   support
+
+           0       0.43      0.27      0.33        98
+           1       0.38      0.72      0.49        98
+           2       0.62      0.58      0.60        98
+           3       0.70      0.68      0.69        98
+           4       0.56      0.53      0.54        98
+           5       0.25      0.20      0.22        98
+           6       0.75      0.57      0.65        98
+
+    accuracy                           0.51       686
+   macro avg       0.53      0.51      0.50       686
+weighted avg       0.53      0.51      0.50       686
+
+
+Confusion matrix:
+[[26 12  7  9 10 19 15]
+ [ 2 71 10  2  4  9  0]
+ [ 3 26 57  5  0  6  1]
+ [ 3 12  8 67  1  6  1]
+ [ 7 19  1  3 52 14  2]
+ [ 9 36  9  9 15 20  0]
+ [11 13  0  1 11  6 56]]
