@@ -1,4 +1,5 @@
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix
 from sklearn import datasets, svm, metrics
 from matplotlib.pyplot import imread
 from fnmatch import fnmatch as match
@@ -9,65 +10,69 @@ import wget, os, re
 from hog import hog
 import numpy as np
 import pickle
+import sys
+
+img_w = 512
+img_h = 512
+
+dictionary = {
+    "f" : "fear",
+    "a" : "angry",
+    "d" : "disgusted",
+    "h" : "happy",
+    "n" : "neutral",
+    "sa" : "sad",
+    "su" : "surprised"
+}
 
 print("Training facial emotion model")
 
-if (os.path.isdir('./KDEF_and_AKDEF') == False):
-    print("Getting KDEF database")
-    url = 'https://www.kdef.se/download/KDEF_and_AKDEF.zip'
-    filename = wget.download(url)
-    with ZipFile('KDEF_and_AKDEF.zip', 'r') as zipObj:
-        # Extract all the contents of zip file in different directory
-        zipObj.extractall('./KDEF_and_AKDEF')
+if __name__ == "__main__":
+    if (len(sys.argv) != 3):
+        print("Usage: python train_emotion.py [database_name] [traing split percent]")
+        print("Example: python3.8 train_emotion database 0.7")
+        print("The database and this file should be in the same directory")
+        sys.exit()
 
-data_path = './KDEF_and_AKDEF/KDEF/'
+    database_name = sys.argv[1]
+    train_precent = sys.argv[2]
+    data_path = './' + database_name
 
-dictionary = {
-    "AF" : "afraid",
-    "AN" : "angry",
-    "DI" : "disgusted",
-    "HA" : "happy",
-    "NE" : "neutral",
-    "SA" : "sad",
-    "SU" : "surprised"
-}
+    hog = hog()
+    hog.summary()
+    
+    print("Processing dataset")
+    labels = []
+    data = np.zeros((1, int(hog.feature_size * 64))) # Create empty image so the other can stack here
+    for emotion in os.listdir(data_path):
+        for image in os.listdir(data_path + '/' + emotion):
+            img = imread(data_path + '/' + emotion + '/' + image)
+            img = resize(img, (img_w, img_h))
+            img = rgb2gray(img)
+            feature = []
+            for i in range(0, img_w, 64):
+                for j in range(0, img_h, 64):
+                    patch = img[i:i+64, j:j+64]
+                    feature = np.concatenate((feature, [hog.get_feature(patch)]), axis=None)
+            data = np.vstack((data,feature))
+            feature = [hog.get_feature(img)]
+            labels.append(list(dictionary).index(emotion))
+    data = data[1:] # Delete the dummy feature
+    labels = np.array(labels)
 
-hog = hog()
-hog.summary()
+    classifier = svm.SVC()
+    data_train, data_test, labels_train, label_test = train_test_split(
+        data, labels, test_size=float(train_precent), shuffle=False)
 
-labels = []
-data = np.zeros((1, int(hog.feature_size))) # Create empty image so the other can stack here
+    print("Training the model")
+    classifier.fit(data_train, labels_train)
+    pickle.dump(classifier, open((database_name + '.svm'), 'wb'))
 
-print("Reading the input data")
-for person in os.listdir(data_path):
-    for image in os.listdir(data_path + person):
-        # Only front facing profiles
-        if match(image, '*S.JPG'):
-            keyword = re.match(r"([a-z]+)([0-9]+)([a-z]+)", image, re.I)
-            category = keyword.groups()[2]
-            category = category[:-1]
-            labels.append(list(dictionary).index(category))
-            img = imread(data_path + person + "/" + image)
-            img = resize(img, (64,64))
-            img = [hog.get_feature(rgb2gray(img))]
-            data = np.vstack((data,img))
-
-data = data[1:] # Delete the dummy image
-labels = np.array(labels)
-
-classifier = svm.SVC()
-data_train, data_test, labels_train, label_test = train_test_split(
-    data, labels, test_size=0.1, shuffle=False)
-
-print("Training the model")
-classifier.fit(data_train, labels_train)
-pickle.dump(classifier, open('emotion.svm', 'wb'))
-
-print("Testing the model")
-predicted = classifier.predict(data_test)
-
-print("Classification report for classifier %s:\n%s\n"
-      % (classifier, metrics.classification_report(label_test, predicted)))
-disp = metrics.plot_confusion_matrix(classifier, data_test, label_test)
-disp.figure_.suptitle("Confusion Matrix")
-print("Confusion matrix:\n%s" % disp.confusion_matrix)
+    print("Testing the model")
+    predicted = classifier.predict(data_test)
+    
+    f = open(database_name + "_report.txt", "a")
+    f.write("Classification report for classifier\n")
+    f.write(str(metrics.classification_report(label_test, predicted)))
+    f.write(str(confusion_matrix(label_test, predicted)))
+    f.close()
