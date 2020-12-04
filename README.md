@@ -8,7 +8,7 @@ cd facial_emotion
 
 ## Install libs
 ```
-python3.8 -m pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 ## Copy database
 ```
@@ -38,7 +38,7 @@ facial_emotion
 
 ## Train model
 ```
-python3.8 train_emotion.py database 0.7
+python train_emotion.py database 0.7
 ```
 
 ## Output
