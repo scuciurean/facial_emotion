@@ -18,7 +18,7 @@ if (os.path.isdir('./KDEF_and_AKDEF') == False):
     filename = wget.download(url)
     with ZipFile('KDEF_and_AKDEF.zip', 'r') as zipObj:
         # Extract all the contents of zip file in different directory
-        zipObj.extractall('./KDEF_and_AKDEF')
+        zipObj.extractall('./')
 
 data_path = './KDEF_and_AKDEF/KDEF/'
 
