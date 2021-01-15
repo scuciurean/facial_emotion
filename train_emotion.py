@@ -71,3 +71,10 @@ print("Classification report for classifier %s:\n%s\n"
 disp = metrics.plot_confusion_matrix(classifier, data_test, label_test)
 disp.figure_.suptitle("Confusion Matrix")
 print("Confusion matrix:\n%s" % disp.confusion_matrix)
+
+#Save the confusion matrix to a file
+f = open("report.txt", "a")
+f.write("Classification report for classifier\n")
+f.write(str(metrics.classification_report(label_test, predicted)))
+f.write(str(confusion_matrix(label_test, predicted)))
+f.close()
